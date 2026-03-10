@@ -1,0 +1,45 @@
+cmake_minimum_required(VERSION 3.25)
+project(cadantauri_libs)
+
+option(build_nuklear "Build Nuklear CMake" ON)
+option(build_portaudio "Build PortAudio CMake" ON)
+option(build_libsndfile "Build libsndfile CMake" ON)
+option(build_sdl3 "Build SDL3 CMake" ON)
+
+function(maybe_add_subdirectory dir)
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${dir}/CMakeLists.txt")
+        message(STATUS "Adding subdirectory: ${dir}")
+        add_subdirectory("${dir}")
+
+    else()
+        message(STATUS "Skipping ${dir}: no CMakeLists.txt found.")
+    endif()
+endfunction()
+
+if(build_portaudio)
+    maybe_add_subdirectory(portaudio)
+endif()
+
+if(build_nuklear)
+    maybe_add_subdirectory(Nuklear)
+endif()
+
+if(build_libsndfile)
+    maybe_add_subdirectory(libsndfile)
+endif()
+
+if(build_sdl3)
+    maybe_add_subdirectory(SDL3)
+endif()
+
+file(GLOB children RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "${CMAKE_CURRENT_LIST_DIR}/*")
+foreach(child ${children})
+  if(IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${child}")
+    if(NOT ("${child}" STREQUAL "Nuklear") AND NOT ("${child}" STREQUAL "portaudio") AND NOT ("${chile}" STREQUAL "libsndfile") AND NOT ("${child}" STREQUAL "SDL3"))
+      if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${child}/CMakeLists.txt")
+        message(STATUS "Adding discovered subdirectory: ${child}")
+        add_subdirectory("${child}")
+      endif()
+    endif()
+  endif()
+endforeach()
