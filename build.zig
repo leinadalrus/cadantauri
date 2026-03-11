@@ -83,10 +83,13 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
-    exe.addIncludePath(b.path("libs/Nuklear/src"));
-
     exe.addIncludePath(b.path("libs/portaudio/include"));
     exe.addIncludePath(b.path("libs/portaudio/src/common"));
+
+    exe.addIncludePath(b.path("libs/libsndfile/include"));
+    exe.addIncludePath(b.path("libs/libsndfile/lib"));
+
+    exe.addIncludePath(b.path("libs/Nuklear/src"));
 
     exe.addIncludePath(b.path("libs/SDL3/x86_64-w64-mingw32/include"));
     exe.addLibraryPath(b.path("libs/SDL3/x86_64-w64-mingw32/lib"));
@@ -183,11 +186,13 @@ pub fn build(b: *std.Build) void {
     exe.linkSystemLibrary("cfgmgr32");
     exe.linkSystemLibrary("imm32");
     exe.linkSystemLibrary("gdi32");
+    exe.linkSystemLibrary("ogg");
     exe.linkSystemLibrary("ole32");
     exe.linkSystemLibrary("oleaut32");
     exe.linkSystemLibrary("opengl32");
     exe.linkSystemLibrary("shell32");
     exe.linkSystemLibrary("setupapi");
+    exe.linkSystemLibrary("sndfile");
     exe.linkSystemLibrary("user32");
     exe.linkSystemLibrary("version");
     exe.linkSystemLibrary("windowscodecs");

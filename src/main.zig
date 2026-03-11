@@ -1,11 +1,14 @@
 const std = @import("std");
 const cadantauri = @import("cadantauri");
+const pa = @cImport({
+    @cInclude("portaudio.h");
+});
+const libsnd = @cImport({
+    @cInclude("sndfile.h");
+});
 const nk = @cImport({
     @cDefine("NK_IMPLEMENTATION", 1);
     @cInclude("nuklear.h");
-});
-const pa = @cImport({
-    @cInclude("portaudio.h");
 });
 const sdl = @cImport({
     @cDefine("SDL_MAIN_USE_CALLBACKS", "1");
@@ -51,6 +54,15 @@ pub fn main() !void {
     defer _ = pa.Pa_StopStream(stream);
 }
 
+const STATE_PAUSED = 0;
+const STATE_PLAYING = 1;
+const STATE_STOPPING = 2;
+
+const MAX_CHANNELS = 1;
+const MAX_TRACKS = 1;
+var channel_states: [MAX_CHANNELS]u8 = undefined;
+var track_states: [MAX_TRACKS]u8 = undefined;
+
 const AppState = struct {
     window: *sdl.SDL_Window,
     renderer: *sdl.SDL_Renderer,
@@ -58,7 +70,23 @@ const AppState = struct {
 
 // * Track Mixing
 
-const AudioChannelData = struct {
+const AudioTrackUnit = struct {
+    id: TrackID,
+    name: TrackName,
+    data: AudioTrackData,
+    panning: AudioPanningUnit,
+    volume: AudioVolumeUnit,
+};
+
+const AudioChannelUnit = struct {
+    id: ChannelID,
+    name: ChannelName,
+    data: AudioChannelData,
+    panning: AudioPanningUnit,
+    volume: AudioVolumeUnit,
+};
+
+const AudioTrackData = struct {
     input_buffer: ?*const anyopaque,
     output_buffer: ?*anyopaque,
     frames_per_buffer: c_ulong,
@@ -67,7 +95,7 @@ const AudioChannelData = struct {
     user_data: ?*anyopaque,
 };
 
-const AudioTrackData = struct {
+const AudioChannelData = struct {
     input_buffer: ?*const anyopaque,
     output_buffer: ?*anyopaque,
     frames_per_buffer: c_ulong,
@@ -82,6 +110,22 @@ const AudioVolumeUnit = struct {
 
 const AudioPanningUnit = struct {
     panning_level: f32,
+};
+
+const TrackID = struct {
+    id: u8,
+};
+
+const TrackName = struct {
+    name: []const u8,
+};
+
+const ChannelID = struct {
+    id: u8,
+};
+
+const ChannelName = struct {
+    name: []const u8,
 };
 
 // * Buffer Management: playback and stack/heap buffers and data-structures
