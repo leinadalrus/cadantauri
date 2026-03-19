@@ -23,8 +23,8 @@ pub const STATE_STOPPING = 2;
 
 pub const MAX_CHANNELS = 1;
 pub const MAX_TRACKS = 1;
-var channel_states: [MAX_CHANNELS]u8 = undefined;
-var track_states: [MAX_TRACKS]u8 = undefined;
+var channel_states: [MAX_CHANNELS]u8 = 1;
+var track_states: [MAX_TRACKS]u8 = 1;
 
 pub const AppState = struct {
     window: *sdl.SDL_Window,
