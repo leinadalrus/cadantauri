@@ -90,10 +90,7 @@ pub fn build(b: *std.Build) void {
     exe.addIncludePath(b.path("libs/libsndfile/lib"));
 
     exe.addIncludePath(b.path("libs/Nuklear/src"));
-
-    exe.addIncludePath(b.path("libs/SDL3/x86_64-w64-mingw32/include"));
-    exe.addLibraryPath(b.path("libs/SDL3/x86_64-w64-mingw32/lib"));
-    exe.addObjectFile(b.path("libs/SDL3/x86_64-w64-mingw32/lib/libSDL3.dll.a"));
+    exe.addIncludePath(b.path("libs/SDL3/include"));
 
     exe.addCSourceFiles(.{
         .files = &.{

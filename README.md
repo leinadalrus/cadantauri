@@ -3,7 +3,8 @@
 ## To-Do
 
 1. CMake: Delete Cache and Reconfigure (in VS Code command palette)
-2. Command Palette: Reload Window
+2. Fix: re-write all `CMakeLists.txt` files to have CMake minimum version be `3.5`
+3. Command Palette: Reload Window
 
 ## Read-me
 
