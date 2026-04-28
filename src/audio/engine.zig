@@ -26,6 +26,42 @@ pub const MAX_TRACKS = 1;
 var channel_states: [MAX_CHANNELS]u8 = 1;
 var track_states: [MAX_TRACKS]u8 = 1;
 
+pub const AudioDirector = struct {
+    pub fn start(
+        stream: ?*pa.PaStream,
+    ) !void {
+        var err = pa.Pa_StartStream(stream);
+        if (err != pa.paNoError) std.debug.print("An error has occurred ...", .{err});
+
+        pa.Pa_Sleep(1000);
+        // ? NOTE(stop): stop stream is mostly available on most platforms
+        // err = pa.Pa_StopStream(stream);
+        // if (err != pa.paNoError) std.debug.print("An error has occurred ...", .{err});
+
+        // ? NOTE(abort): abort stream is mostly available on most platforms, and is the safer option between stop and abort
+        err = pa.Pa_AbortStream(stream);
+        if (err != pa.paNoError) std.debug.print("An error has occurred ...", .{err});
+    }
+
+    pub fn close(
+        stream: ?*pa.PaStream,
+    ) !void {
+        var err = pa.Pa_StartStream(stream);
+
+        err = pa.Pa_CloseStream(stream);
+        if (err != pa.paNoError) std.debug.print("An error has occurred ...", .{err});
+    }
+
+    pub fn terminate(
+        stream: ?*pa.PaStream,
+    ) !void {
+        var err = pa.Pa_StartStream(stream);
+
+        err = pa.Pa_Terminate();
+        if (err != pa.paNoError) std.debug.print("An error has occurred ...", .{err});
+    }
+};
+
 pub const AppState = struct {
     window: *sdl.SDL_Window,
     renderer: *sdl.SDL_Renderer,
@@ -131,3 +167,12 @@ pub const PhaseAudioData = struct {
 };
 
 // * Buffer Management: playback and stack/heap buffers and data-structures
+
+pub const BufferUserData = struct {
+    input_buffer: ?*const anyopaque,
+    output_buffer: ?*anyopaque,
+    frames_per_buffer: c_ulong,
+    callback_time_info: [*c]const pa.PaStreamCallbackTimeInfo,
+    callback_flags: pa.PaStreamCallbackFlags,
+    user_data: ?*anyopaque,
+};
