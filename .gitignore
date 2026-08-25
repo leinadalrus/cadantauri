@@ -1,0 +1,7 @@
+build/
+out/
+
+# Documents
+
+TODO.md
+*.pdf
