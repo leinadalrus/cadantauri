@@ -1,6 +1,7 @@
 module cadantauri;
 
 import std::io;
+import std::math;
 
 // Main process program function
 
@@ -160,6 +161,34 @@ struct Session
 struct Memento
 {
 	String[][] memento_matrix_data; // String matrix data for reading-and-writing
+	// NOTE: YAML or JSON for hierarchical data
+	// NOTE: Controlled Binary Serialisation process or Protocol Buffer for every object which writes their state out in a controlled way
+}
+
+// Vectors
+
+// Sinusoid going to the right
+fn double form_sine_wave_yt(double amplitude, double angular, double independent, double phase)
+{
+	return amplitude * math::sin(angular * independent + phase);
+}
+
+// Sinusoid going down
+fn double form_cosine_wave_xt(double amplitude, double angular, double independent, double phase)
+{
+	return amplitude * math::cos(angular * independent + phase);
+}
+
+struct Circle
+{
+	float radius;
+	Vector2 point;
+}
+
+struct Vector2
+{
+	float x;
+	float y;
 }
 
 // Sound AOS functions
@@ -191,7 +220,7 @@ fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app
 	return true; // Return true if successful, false otherwise
 }
 
-fn SoundAOS initialise_sounds()
+fn SoundAOS initialise_multiple_sounds()
 {
 	SoundAOS sounds = (SoundAOS) { };
 	sounds.sounds = { };
