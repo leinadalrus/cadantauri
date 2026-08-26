@@ -2,6 +2,8 @@ module cadantauri;
 
 import std::io;
 
+// Main process program function
+
 fn int main(String[] args)
 {
 	io::printn("Cadantauri: a Waveform Editing Hybrid Tracker");
@@ -10,6 +12,8 @@ fn int main(String[] args)
 	// NOTE: optimistic-defensive programming as convention
 	return succession;
 }
+
+// Foreign function interops
 
 typedef _SDL_Window @private = void;
 typedef SDL_Window @public = inline _SDL_Window;
