@@ -27,6 +27,7 @@ typedef _SDL_AudioDeviceID @private = uint;
 typedef SDL_AudioDeviceID @public = inline _SDL_AudioDeviceID;
 
 // Create
+
 extern fn void sdl_init() @cname("SDL_Init") @public;
 extern fn SDL_AudioStream* create_audio_stream() @cname("SDL_CreateAudioStream") @public;
 
@@ -53,8 +54,9 @@ extern fn void sdl_closewindow() @cname("SDL_CloseWindow") @public;
 struct AudioEngine
 {
 	AppState[] application_states;
-	WaveformCache[] waveform_caches;
-	TrackerCache[] tracker_caches;
+	UserSession[] user_sessions;
+	TrackerCache[] tracker_caches; // Works as a discrete bar/timeline section (bisect/dissection)
+	WaveformCache[] waveform_caches; // initialise Waveforms (with cache) after Tracker mechanics
 }
 
 struct AppState
@@ -67,10 +69,14 @@ struct AppState
 
 // TODO: Array-of-Structs or Structures-of-Arrays for all of the following data structures
 
+// Beats-per-minute
+
 struct WaveformAOS
 {
 	Waveform[] waveforms;
 }
+
+// Bars
 
 struct TrackerAOS
 {
@@ -134,6 +140,11 @@ struct TrackerCache
 }
 
 // Sessions
+
+struct UserSession
+{
+	Session session;
+}
 
 struct Session
 {
