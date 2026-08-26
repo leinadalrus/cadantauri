@@ -52,8 +52,9 @@ extern fn void sdl_closewindow() @cname("SDL_CloseWindow") @public;
 
 struct AudioEngine
 {
-	any[] audio_engine_arguments;
-	any[] audio_engine_flags;
+	AppState[] application_states;
+	WaveformCache[] waveform_caches;
+	TrackerCache[] tracker_caches;
 }
 
 struct AppState
@@ -143,7 +144,7 @@ struct Session
 
 struct Memento
 {
-	String[][] memento_data; // String matrix data for reading-and-writing
+	String[][] memento_matrix_data; // String matrix data for reading-and-writing
 }
 
 // Sound AOS functions
