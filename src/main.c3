@@ -197,11 +197,11 @@ fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app
 {
 	SDL_AudioSpec* audio_spec = null; // How do we safely allocate memory here?
 
-	// Load the WAV file and initialize the Sound struct
+	// Load the ogg file and initialize the Sound struct
 	// This is a placeholder implementation; actual implementation will depend on SDL functions
-	device_sound.wav_data = null; // Load WAV data from filename
-	device_sound.wav_data_length = null; // Set length of WAV data
-	device_sound.audio_stream = null; // Create audio stream from WAV data
+	device_sound.wav_data = null; // Load ogg data from filename
+	device_sound.wav_data_length = null; // Set length of ogg data
+	device_sound.audio_stream = null; // Create audio stream from ogg data
 
 	device_sound.audio_stream = create_audio_stream(); // Create audio stream
 	if (!device_sound.audio_stream)
@@ -215,7 +215,7 @@ fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app
 		return false;
 	}
 
-	sdl_free(wav_filepath); // Free the WAV file path string if necessary, maybe use SDL_free or similar function
+	sdl_free(wav_filepath); // Free the ogg file path string if necessary, maybe use SDL_free or similar function
 
 	return true; // Return true if successful, false otherwise
 }
