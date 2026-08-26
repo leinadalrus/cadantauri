@@ -1,12 +1,14 @@
 module cadantauri;
 
-
 import std::io;
 
 fn int main(String[] args)
 {
-	io::printn("Cadantauri Audio Editor v0.1.0");
-	return 0;
+	io::printn("Cadantauri: a Waveform Editing Hybrid Tracker");
+	int succession = 0;
+
+	// NOTE: optimistic-defensive programming as convention
+	return succession;
 }
 
 typedef _SDL_Window @private = void;
@@ -62,12 +64,30 @@ struct AppState
 	bool is_running;
 }
 
-struct AudioClip
+struct Waveform
 {
-	String name;
-	float[] samples;
-	int channels;
-	int index;
+	// Continuous waveform audio data
+	// overlayed over discrete note events
+	Sounds sounds;
+}
+
+struct Sounds
+{
+	Sound[] sounds;
+}
+
+struct Sound
+{
+	uint* wav_data;
+	uint* wav_data_length;
+	SDL_AudioStream* audio_stream;
+}
+
+struct Tracker
+{
+	// Discrete note events
+	// Can be used as the Beats-per-Bar Sectioning mechanic
+	AudioTrack track;
 }
 
 struct AudioTrack
@@ -80,16 +100,12 @@ struct AudioTrack
 	bool is_playing;
 }
 
-struct Sound
+struct AudioClip
 {
-	uint* wav_data;
-	uint* wav_data_length;
-	SDL_AudioStream* audio_stream;
-}
-
-struct Sounds
-{
-	Sound[] sounds;
+	String name;
+	float[] samples;
+	int channels;
+	int index;
 }
 
 fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
@@ -132,9 +148,28 @@ fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length
 
 // TODO: Array-of-Structs or Structures-of-Arrays for all of the following data structures
 
+// Caching
+
+struct WaveformCache
+{
+	Memento waveform_memento;
+}
+
+struct TrackerCache
+{
+	Memento tracker_memento;
+}
+
 // Sessions
 
 struct Session
 {
-	any[] session_data;
+	Memento session_memento; // Hex or Binary data into a memento (file)
+}
+
+// Memento File read-and-writing
+
+struct Memento
+{
+	String[][] memento_data; // String matrix data for reading-and-writing
 }
