@@ -2,6 +2,13 @@
 
 ## a Waveform Editing Hybrid Tracker
 
+# Focus
+
+- Write in a data-oriented and agnostic manner
+- Throughput data-driven values against event-driven menus
+
+# Structure layout and format
+
 > Why are the members and data-structures laid out to read from the bottom-up ...?
 
 _It is written like so, to make the reader (me, as well) read the contents of the file and to make them read from 'right-to-left' ..._

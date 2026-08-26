@@ -39,7 +39,7 @@ extern fn SDL_AudioStream* create_audio_stream() @cname("SDL_CreateAudioStream")
 // Read
 
 extern fn void sdl_loadwav() @cname("SDL_LoadWAV") @public;
-extern fn bool sdl_bindaudiostream(
+extern fn int sdl_bindaudiostream(
 	SDL_AudioDeviceID audio_device,
 	SDL_AudioStream* audio_stream
 ) @cname("SDL_BindAudioStream") @public;
@@ -66,7 +66,7 @@ struct AudioEngine
 
 struct AppState
 {
-	bool is_running;
+	int is_running;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_AudioDeviceID audio_device;
@@ -121,7 +121,7 @@ struct AudioTrack
 	double sample_rate;
 	double playhead;
 	int channels;
-	bool is_playing;
+	int is_playing;
 }
 
 struct AudioClip
@@ -193,7 +193,7 @@ struct Vector2
 
 // Sound AOS functions
 
-fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
+fn int initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
 {
 	SDL_AudioSpec* audio_spec = null; // How do we safely allocate memory here?
 
@@ -207,17 +207,17 @@ fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app
 	if (!device_sound.audio_stream)
 	{
 		io::printn("Failed to create audio stream for file");
-		return false;
+		return 1;
 	}
 	if (!sdl_bindaudiostream(app_state.audio_device, device_sound.audio_stream))
 	{
 		io::printn("Failed to bind audio stream for file");
-		return false;
+		return 1;
 	}
 
 	sdl_free(wav_filepath); // Free the ogg file path string if necessary, maybe use SDL_free or similar function
 
-	return true; // Return true if successful, false otherwise
+	return 0; // Return false if no errors, true if otherwise
 }
 
 fn SoundAOS initialise_multiple_sounds()
