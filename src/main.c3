@@ -66,10 +66,10 @@ struct AudioEngine
 
 struct AppState
 {
+	bool is_running;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_AudioDeviceID audio_device;
-	bool is_running;
 }
 
 // TODO: Array-of-Structs or Structures-of-Arrays for all of the following data structures
@@ -116,8 +116,8 @@ struct Tracker
 
 struct AudioTrack
 {
-	String path;
 	AudioClip[] clips;
+	String path;
 	double sample_rate;
 	double playhead;
 	int channels;
