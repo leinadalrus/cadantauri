@@ -64,14 +64,26 @@ struct AppState
 	bool is_running;
 }
 
+// TODO: Array-of-Structs or Structures-of-Arrays for all of the following data structures
+
+struct WaveformAOS
+{
+	Waveform[] waveforms;
+}
+
+struct TrackerAOS
+{
+	Tracker[] trackers;
+}
+
 struct Waveform
 {
 	// Continuous waveform audio data
 	// overlayed over discrete note events
-	Sounds sounds;
+	SoundAOS sounds;
 }
 
-struct Sounds
+struct SoundAOS
 {
 	Sound[] sounds;
 }
@@ -108,6 +120,34 @@ struct AudioClip
 	int index;
 }
 
+// Caching
+
+struct WaveformCache
+{
+	Memento waveform_memento;
+}
+
+struct TrackerCache
+{
+	Memento tracker_memento;
+}
+
+// Sessions
+
+struct Session
+{
+	Memento session_memento; // Hex or Binary data into a memento (file)
+}
+
+// Memento File read-and-writing
+
+struct Memento
+{
+	String[][] memento_data; // String matrix data for reading-and-writing
+}
+
+// Sound AOS functions
+
 fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
 {
 	SDL_AudioSpec* audio_spec = null; // How do we safely allocate memory here?
@@ -135,41 +175,13 @@ fn bool initialise_sound(String wav_filepath, Sound* device_sound, AppState* app
 	return true; // Return true if successful, false otherwise
 }
 
-fn Sounds initialise_sounds()
+fn SoundAOS initialise_sounds()
 {
-	Sounds sounds = (Sounds) { };
+	SoundAOS sounds = (SoundAOS) { };
 	sounds.sounds = { };
 	return sounds;
 }
 
 fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length)
 {
-}
-
-// TODO: Array-of-Structs or Structures-of-Arrays for all of the following data structures
-
-// Caching
-
-struct WaveformCache
-{
-	Memento waveform_memento;
-}
-
-struct TrackerCache
-{
-	Memento tracker_memento;
-}
-
-// Sessions
-
-struct Session
-{
-	Memento session_memento; // Hex or Binary data into a memento (file)
-}
-
-// Memento File read-and-writing
-
-struct Memento
-{
-	String[][] memento_data; // String matrix data for reading-and-writing
 }
