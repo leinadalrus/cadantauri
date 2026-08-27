@@ -14,22 +14,61 @@ fn int main(String[] args)
 	return succession;
 }
 
+fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length)
+{
+}
+
+fn SoundAOS initialise_multiple_sounds()
+{
+	SoundAOS sounds = (SoundAOS) { };
+	sounds.sounds = { };
+	return sounds;
+}
+
+// Sound AOS functions
+
+fn int initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
+{
+	SDL_AudioSpec* audio_spec = null; // How do we safely allocate memory here?
+
+	// Load the ogg file and initialize the Sound struct
+	// This is a placeholder implementation; actual implementation will depend on SDL functions
+	device_sound.wav_data = null; // Load ogg data from filename
+	device_sound.wav_data_length = null; // Set length of ogg data
+	device_sound.audio_stream = null; // Create audio stream from ogg data
+
+	device_sound.audio_stream = create_audio_stream(); // Create audio stream
+	if (!device_sound.audio_stream)
+	{
+		io::printn("Failed to create audio stream for file");
+		return 1;
+	}
+	if (!sdl_bindaudiostream(app_state.audio_device, device_sound.audio_stream))
+	{
+		io::printn("Failed to bind audio stream for file");
+		return 1;
+	}
+
+	sdl_free(wav_filepath); // Free the ogg file path string if necessary, maybe use SDL_free or similar function
+
+	return 0; // Return false if no errors, true if otherwise
+}
+
+// Sinusoidal Wave functions
+
+// Sinusoid going to the right
+fn double form_sine_wave_yt(double amplitude, double angular, double independent, double phase)
+{
+	return amplitude * math::sin(angular * independent + phase);
+}
+
+// Sinusoid going down
+fn double form_cosine_wave_xt(double amplitude, double angular, double independent, double phase)
+{
+	return amplitude * math::cos(angular * independent + phase);
+}
+
 // Foreign function interops
-
-typedef _SDL_Window @private = void;
-typedef SDL_Window @public = inline _SDL_Window;
-
-typedef _SDL_Renderer @private = void;
-typedef SDL_Renderer @public = inline _SDL_Renderer;
-
-typedef _SDL_AudioStream @private = void;
-typedef SDL_AudioStream @public = inline _SDL_AudioStream;
-
-typedef _SDL_AudioSpec @private = void;
-typedef SDL_AudioSpec @public = inline _SDL_AudioSpec;
-
-typedef _SDL_AudioDeviceID @private = uint;
-typedef SDL_AudioDeviceID @public = inline _SDL_AudioDeviceID;
 
 // Create
 
@@ -179,56 +218,17 @@ struct Vector2
 	float y;
 }
 
-// Sinusoidal Wave functions
+typedef _SDL_Window @private = void;
+typedef SDL_Window @public = inline _SDL_Window;
 
-// Sinusoid going to the right
-fn double form_sine_wave_yt(double amplitude, double angular, double independent, double phase)
-{
-	return amplitude * math::sin(angular * independent + phase);
-}
+typedef _SDL_Renderer @private = void;
+typedef SDL_Renderer @public = inline _SDL_Renderer;
 
-// Sinusoid going down
-fn double form_cosine_wave_xt(double amplitude, double angular, double independent, double phase)
-{
-	return amplitude * math::cos(angular * independent + phase);
-}
+typedef _SDL_AudioStream @private = void;
+typedef SDL_AudioStream @public = inline _SDL_AudioStream;
 
-// Sound AOS functions
+typedef _SDL_AudioSpec @private = void;
+typedef SDL_AudioSpec @public = inline _SDL_AudioSpec;
 
-fn int initialise_sound(String wav_filepath, Sound* device_sound, AppState* app_state)
-{
-	SDL_AudioSpec* audio_spec = null; // How do we safely allocate memory here?
-
-	// Load the ogg file and initialize the Sound struct
-	// This is a placeholder implementation; actual implementation will depend on SDL functions
-	device_sound.wav_data = null; // Load ogg data from filename
-	device_sound.wav_data_length = null; // Set length of ogg data
-	device_sound.audio_stream = null; // Create audio stream from ogg data
-
-	device_sound.audio_stream = create_audio_stream(); // Create audio stream
-	if (!device_sound.audio_stream)
-	{
-		io::printn("Failed to create audio stream for file");
-		return 1;
-	}
-	if (!sdl_bindaudiostream(app_state.audio_device, device_sound.audio_stream))
-	{
-		io::printn("Failed to bind audio stream for file");
-		return 1;
-	}
-
-	sdl_free(wav_filepath); // Free the ogg file path string if necessary, maybe use SDL_free or similar function
-
-	return 0; // Return false if no errors, true if otherwise
-}
-
-fn SoundAOS initialise_multiple_sounds()
-{
-	SoundAOS sounds = (SoundAOS) { };
-	sounds.sounds = { };
-	return sounds;
-}
-
-fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length)
-{
-}
+typedef _SDL_AudioDeviceID @private = uint;
+typedef SDL_AudioDeviceID @public = inline _SDL_AudioDeviceID;
