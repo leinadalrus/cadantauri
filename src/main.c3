@@ -18,10 +18,9 @@ fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length
 {
 }
 
-fn SoundAOS initialise_multiple_sounds()
+fn Sound[] initialise_multiple_sounds()
 {
-	SoundAOS sounds = (SoundAOS) { };
-	sounds.sounds = { };
+	Sound[] sounds = (Sound[]) { };
 	return sounds;
 }
 
@@ -131,12 +130,8 @@ struct Waveform
 {
 	// Continuous waveform audio data
 	// overlayed over discrete note events
-	SoundAOS sounds;
-}
-
-struct SoundAOS
-{
 	Sound[] sounds;
+	Amplitude amplitude;
 }
 
 struct Sound
@@ -159,7 +154,7 @@ struct AudioTrack
 	String path;
 	double sample_rate;
 	double playhead;
-	int channels;
+	uint channels;
 	int is_playing;
 }
 
@@ -206,7 +201,7 @@ struct Memento
 
 // Vectors
 
-struct Circle
+struct Amplitude
 {
 	float radius;
 	Vector2 point;
