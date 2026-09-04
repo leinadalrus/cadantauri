@@ -3,6 +3,9 @@ module cadantauri;
 import std::io;
 import std::math;
 
+const CHANNELS    = 2;
+const SAMPLE_RATE = 44100;
+
 // Main process program function
 
 fn int main(String[] args)
@@ -10,12 +13,38 @@ fn int main(String[] args)
 	io::printn("Cadantauri: a Waveform Editing Hybrid Tracker");
 	int succession = 0;
 
+	AudioResult result;
+	AudioConfig engine_config;
+	SDL_AudioSpec desired_spec;
+	SDL_AudioSpec obtained_spec;
+	SDL_AudioDeviceID device_id;
+
+	engine_config = engine_config_init();
+	engine_config
+		.no_device = true; /* <-- Make sure this is set so that no device is created (we'll deal with that ourselves). */
+	engine_config.channels = CHANNELS;
+	engine_config.sample_rate = SAMPLE_RATE;
+
 	// NOTE: optimistic-defensive programming as convention
 	return succession;
 }
 
-fn void audio_callback(void* user_data, uint* audio_data_stream, int data_length)
+fn void data_callback(void* user_data, uptr buffer, int buffer_size)
 {
+	ulong buffer_frames = buffer;
+}
+
+fn AudioResult engine_init(MAEngineConfig* config, MAEngine* engine)
+{
+	return (AudioResult) {
+		.config = config,
+		.engine = engine,
+	};
+}
+
+fn AudioConfig engine_config_init()
+{
+	return (AudioConfig) { };
 }
 
 fn Sound[] initialise_multiple_sounds()
@@ -69,6 +98,22 @@ fn double form_cosine_wave_xt(double amplitude, double angular, double independe
 
 // Foreign function interops
 
+// MiniAudio
+
+extern fn ulong _ma_get_bytes_per_frame(float format, int channels) @cname("ma_get_bytes_per_frame") @private;
+extern fn int _ma_engine_get_channels(AudioEngine* engine) @cname("ma_engine_get_channels") @private;
+extern fn void _ma_engine_read_pcm_frames(
+	AudioEngine* engine,
+	uptr buffer,
+	ulong buffer_frames,
+	void* user_data
+) @cname("ma_engine_read_pcm_frames") @private;
+extern fn void _ma_engine_config_init() @cname("ma_engine_config_init") @private;
+extern fn void _ma_engine_init(AudioConfig* config, AudioEngine* engine) @cname("ma_engine_init") @private;
+extern fn void _ma_engine_uninit(AudioEngine* engine) @cname("ma_engine_uninit") @private;
+
+// SDL3
+
 // Create
 
 extern fn void sdl_init() @cname("SDL_Init") @public;
@@ -100,6 +145,19 @@ struct AudioEngine
 	UserSession[] user_sessions;
 	TrackerCache[] tracker_caches; // Works as a discrete bar/timeline section (bisect/dissection)
 	WaveformCache[] waveform_caches; // initialise Waveforms (with cache) after Tracker mechanics
+}
+
+struct AudioConfig
+{
+	bool no_device;
+	int channels;
+	float sample_rate;
+}
+
+struct AudioResult
+{
+	MAEngineConfig* config;
+	MAEngine* engine;
 }
 
 struct AppState
@@ -213,16 +271,25 @@ struct Vector2
 	float y;
 }
 
-typedef _SDL_Window @private = void;
+typedef _MAResult @private = void*;
+typedef MAResult @public = inline _MAResult;
+
+typedef _MAEngine @private = void*;
+typedef MAEngine @public = inline _MAEngine;
+
+typedef _MAEngineConfig @private = void*;
+typedef MAEngineConfig @public = inline _MAEngineConfig;
+
+typedef _SDL_Window @private = void*;
 typedef SDL_Window @public = inline _SDL_Window;
 
-typedef _SDL_Renderer @private = void;
+typedef _SDL_Renderer @private = void*;
 typedef SDL_Renderer @public = inline _SDL_Renderer;
 
-typedef _SDL_AudioStream @private = void;
+typedef _SDL_AudioStream @private = void*;
 typedef SDL_AudioStream @public = inline _SDL_AudioStream;
 
-typedef _SDL_AudioSpec @private = void;
+typedef _SDL_AudioSpec @private = void*;
 typedef SDL_AudioSpec @public = inline _SDL_AudioSpec;
 
 typedef _SDL_AudioDeviceID @private = uint;
